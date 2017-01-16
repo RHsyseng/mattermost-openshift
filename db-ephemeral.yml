@@ -10,13 +10,13 @@ objects:
   metadata:
     creationTimestamp: null
     labels:
-      app: mattermost
+      app: ${APPLICATION_NAME}
       template: mysql-ephemeral-template
-    name: mm-mysql
+    name: ${DATABASE_SERVICE_NAME}
   spec:
     replicas: 1
     selector:
-      name: mm-mysql
+      name: ${DATABASE_SERVICE_NAME}
     strategy:
       recreateParams:
         timeoutSeconds: 600
@@ -26,16 +26,16 @@ objects:
       metadata:
         creationTimestamp: null
         labels:
-          name: mm-mysql
+          name: ${DATABASE_SERVICE_NAME}
       spec:
         containers:
         - env:
           - name: MYSQL_USER
-            value: mmuser
+            value: ${MYSQL_USER}
           - name: MYSQL_PASSWORD
-            value: mostest
+            value: ${MYSQL_PASSWORD}
           - name: MYSQL_DATABASE
-            value: mattermost_test
+            value: ${MYSQL_DATABASE}
           image: registry.access.redhat.com/rhscl/mysql-56-rhel7:latest
           imagePullPolicy: IfNotPresent
           livenessProbe:
@@ -92,3 +92,39 @@ objects:
           namespace: openshift
       type: ImageChange
     - type: ConfigChange
+parameters:
+- name: APPLICATION_NAME
+  required: true
+  value: mattermost
+- description: Maximum amount of memory the container can use.
+  displayName: Memory Limit
+  name: MEMORY_LIMIT
+  value: 512Mi
+- description: The name of the OpenShift Service exposed for the database.
+  displayName: Database Service Name
+  name: DATABASE_SERVICE_NAME
+  required: true
+  value: mm-mysql
+- description: Username for MySQL user that will be used for accessing the database.
+  displayName: MySQL User
+  from: user[A-Z0-9]{3}
+  name: MYSQL_USER
+  required: true
+  value: mmuser
+- description: Password for the MySQL user.
+  displayName: MySQL Password
+  from: '[a-zA-Z0-9]{16}'
+  generate: expression
+  name: MYSQL_PASSWORD
+  required: true
+  value: mostest
+- description: Name of the MySQL database accessed.
+  displayName: MySQL Database Name
+  name: MYSQL_DATABASE
+  required: true
+  value: mattermost_test
+- description: Volume space available for data, e.g. 512Mi, 2Gi.
+  displayName: Volume Capacity
+  name: VOLUME_CAPACITY
+  required: true
+  value: 512Mi
