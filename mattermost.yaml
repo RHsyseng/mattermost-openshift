@@ -20,7 +20,7 @@ objects:
         name: mattermost:latest
     source:
       git:
-        uri: https://github.com/tchughesiv/mattermost-openshift
+        uri: https://github.com/RHsyseng/mattermost-openshift
       type: Git
     strategy:
       type: Docker
