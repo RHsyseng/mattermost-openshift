@@ -21,9 +21,9 @@
         "SessionLengthMobileInDays": 30,
         "SessionLengthSSOInDays": 30,
         "SessionCacheInMinutes": 10,
-        "WebsocketSecurePort": 443,
-        "WebsocketPort": 80,
-        "WebserverMode": "regular"
+        "WebsocketSecurePort": 8443,
+        "WebsocketPort": 8080,
+        "WebserverMode": "gzip"
     },
     "TeamSettings": {
         "SiteName": "Mattermost",
@@ -48,7 +48,7 @@
     },
     "LogSettings": {
         "EnableConsole": true,
-        "ConsoleLevel": "DEBUG",
+        "ConsoleLevel": "INFO",
         "EnableFile": true,
         "FileLevel": "INFO",
         "FileFormat": "",
