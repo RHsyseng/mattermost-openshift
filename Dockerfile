@@ -21,14 +21,13 @@ ENV APP_ROOT=/opt/mattermost \
     USER_UID=10001
 ENV PATH=$PATH:${APP_ROOT}/bin
 RUN mkdir -p ${APP_ROOT}/etc ${APP_ROOT}/data
-COPY user_setup /tmp/
-COPY bin/ ${APP_ROOT}/bin/
-COPY config.json ${APP_ROOT}/config/config.json
 RUN yum clean all && yum-config-manager --disable \* &> /dev/null && \
     yum-config-manager --enable rhel-7-server-rpms &> /dev/null && \
     yum -y update-minimal --security --sec-severity=Important --sec-severity=Critical --setopt=tsflags=nodocs && \
     yum -y install --setopt=tsflags=nodocs tar && \
     yum clean all
+COPY user_setup /tmp/
+COPY bin/ ${APP_ROOT}/bin/
 RUN cd /opt && \
     curl -LO https://releases.mattermost.com/${MATTERMOST_VERSION}/mattermost-team-${MATTERMOST_VERSION}-linux-amd64.tar.gz && \
     tar xf mattermost-team-${MATTERMOST_VERSION}-linux-amd64.tar.gz && \

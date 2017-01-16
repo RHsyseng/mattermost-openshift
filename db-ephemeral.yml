@@ -12,11 +12,11 @@ objects:
     labels:
       app: mattermost
       template: mysql-ephemeral-template
-    name: db
+    name: mm-mysql
   spec:
     replicas: 1
     selector:
-      name: db
+      name: mm-mysql
     strategy:
       recreateParams:
         timeoutSeconds: 600
@@ -26,7 +26,7 @@ objects:
       metadata:
         creationTimestamp: null
         labels:
-          name: db
+          name: mm-mysql
       spec:
         containers:
         - env:

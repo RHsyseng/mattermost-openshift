@@ -5,13 +5,14 @@ DB_PORT_3306_TCP_PORT=${DB_PORT_3306_TCP_PORT:-3306}
 MM_USERNAME=${MYSQL_USER:-mmuser}
 MM_PASSWORD=${MYSQL_PASSWORD:-mostest}
 MM_DBNAME=${MYSQL_DATABASE:-mattermost_test}
-DB_SERVICE_NAME=$(echo ${DATABASE_SERVICE_NAME} | tr [:lower:] [:upper:] | tr '-' '_')
 
 env
 
+if [ -n "$DATABASE_SERVICE_NAME" ]; then
 echo -ne "Configure MySQL database connection..."
-sed -i 's#"DataSource": "mmuser:mostest@tcp(mysql:3306)/mattermost_test?charset=utf8mb4,utf8"#"DataSource": "'"$MYSQL_USER:$MYSQL_PASSWORD@tcp($(printenv ${DB_SERVICE_NAME^^}_SERVICE_HOST):$(printenv ${DB_SERVICE_NAME^^}_SERVICE_PORT))/$MYSQL_DATABASE?charset=utf8mb4,utf8"'"#' \
-    /opt/mattermost/config/config.json
-cat /opt/mattermost/config/config.json
+DB_SERVICE_NAME=$(echo ${DATABASE_SERVICE_NAME^^} | tr '-' '_')
+sed -i "s@mmuser:mostest\@tcp(dockerhost:3306)\/mattermost_test@${MM_USERNAME}:${MM_PASSWORD}\@tcp($(printenv $(printenv DB_SERVICE_NAME)_SERVICE_HOST):$(printenv $(printenv DB_SERVICE_NAME)_SERVICE_PORT))\/${MM_DBNAME}@g" ${APP_ROOT}/config/config.json
+grep tcp ${APP_ROOT}/config/config.json
+fi
 
-exec /opt/mattermost/bin/platform
+exec ${APP_ROOT}/bin/platform
