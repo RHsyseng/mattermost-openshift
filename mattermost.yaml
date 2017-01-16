@@ -8,16 +8,16 @@ objects:
 - apiVersion: v1
   kind: ImageStream
   metadata:
-    name: ${APPLICATION_NAME}
+    name: mattermost
 - kind: BuildConfig
   apiVersion: v1
   metadata:
-    name: ${APPLICATION_NAME}
+    name: mattermost
   spec:
     output:
       to:
         kind: ImageStreamTag
-        name: ${APPLICATION_NAME}:latest
+        name: mattermost:latest
     source:
       git:
         uri: https://github.com/tchughesiv/mattermost-openshift
@@ -42,7 +42,7 @@ objects:
           name: ${APPLICATION_NAME}
       spec:
         containers:
-        - image: ${APPLICATION_NAME}
+        - image: mattermost
           imagePullPolicy: Always
           name: ${APPLICATION_NAME}
           ports:
@@ -65,7 +65,7 @@ objects:
         - ${APPLICATION_NAME}
         from:
           kind: ImageStreamTag
-          name: ${APPLICATION_NAME}:latest
+          name: mattermost:latest
       type: ImageChange
     - type: ConfigChange
 - kind: Service
