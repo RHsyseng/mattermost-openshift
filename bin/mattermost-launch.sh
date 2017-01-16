@@ -10,7 +10,7 @@ env
 
 if [ -n "$DATABASE_SERVICE_NAME" ]; then
 echo -ne "Configure MySQL database connection..."
-DB_SERVICE_NAME=$(echo ${DATABASE_SERVICE_NAME^^} | tr '-' '_')
+export DB_SERVICE_NAME=$(echo ${DATABASE_SERVICE_NAME^^} | tr '-' '_')
 sed -i "s@mmuser:mostest\@tcp(dockerhost:3306)\/mattermost_test@${MM_USERNAME}:${MM_PASSWORD}\@tcp($(printenv $(printenv DB_SERVICE_NAME)_SERVICE_HOST):$(printenv $(printenv DB_SERVICE_NAME)_SERVICE_PORT))\/${MM_DBNAME}@g" ${APP_ROOT}/config/config.json
 grep tcp ${APP_ROOT}/config/config.json
 fi

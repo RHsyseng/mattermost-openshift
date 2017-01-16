@@ -87,7 +87,7 @@ objects:
     labels:
       app: mysql-ephemeral
       template: mysql-ephemeral-template
-    name: mm-mysql
+    name: ${DATABASE_SERVICE_NAME}
   spec:
     ports:
     - name: mysql
@@ -95,7 +95,7 @@ objects:
       protocol: TCP
       targetPort: 3306
     selector:
-      name: mm-mysql
+      name: ${DATABASE_SERVICE_NAME}
     sessionAffinity: None
     type: ClusterIP
 - kind: Route
