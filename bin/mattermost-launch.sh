@@ -5,11 +5,12 @@ DB_PORT_3306_TCP_PORT=${DB_PORT_3306_TCP_PORT:-3306}
 MM_USERNAME=${MYSQL_USER:-mmuser}
 MM_PASSWORD=${MYSQL_PASSWORD:-mostest}
 MM_DBNAME=${MYSQL_DATABASE:-mattermost_test}
+DB_SERVICE_NAME=$(echo ${DATABASE_SERVICE_NAME} | tr [:lower:] [:upper:] | tr '-' '_')
 
 env
 
 echo -ne "Configure MySQL database connection..."
-sed -i 's#"DataSource": "mmuser:mostest@tcp(mysql:3306)/mattermost_test?charset=utf8mb4,utf8"#"DataSource": "'"$MYSQL_USER:$MYSQL_PASSWORD@tcp($(printenv ${DATABASE_SERVICE_NAME^^}_SERVICE_HOST):$(printenv ${DATABASE_SERVICE_NAME^^}_SERVICE_PORT))/$MYSQL_DATABASE?charset=utf8mb4,utf8"'"#' \
+sed -i 's#"DataSource": "mmuser:mostest@tcp(mysql:3306)/mattermost_test?charset=utf8mb4,utf8"#"DataSource": "'"$MYSQL_USER:$MYSQL_PASSWORD@tcp($(printenv ${DB_SERVICE_NAME^^}_SERVICE_HOST):$(printenv ${DB_SERVICE_NAME^^}_SERVICE_PORT))/$MYSQL_DATABASE?charset=utf8mb4,utf8"'"#' \
     /opt/mattermost/config/config.json
 cat /opt/mattermost/config/config.json
 

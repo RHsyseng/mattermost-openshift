@@ -136,12 +136,12 @@ parameters:
   generate: expression
   name: MYSQL_PASSWORD
   required: true
-  value: most
+  value: mostest
 - description: Name of the MySQL database accessed.
   displayName: MySQL Database Name
   name: MYSQL_DATABASE
   required: true
-  value: mattermost
+  value: mattermost_test
 - description: Volume space available for data, e.g. 512Mi, 2Gi.
   displayName: Volume Capacity
   name: VOLUME_CAPACITY
