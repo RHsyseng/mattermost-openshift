@@ -45,14 +45,10 @@ $ oc new-app -f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/
 -f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/mattermost.yaml -p MYSQL_PASSWORD=mmtest
 ```
 
-If you want to deploy a MySQL database, you could either use the one provided
-by OpenShift or use the file `db-ephemeral.yaml`.
-
 ## Usage
 
 Point your browser at your OCP route/url, the first user you create will
 be an Administrator of mattermost.
-
 
 ## Copyright
 
