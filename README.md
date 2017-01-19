@@ -13,20 +13,18 @@ OpenShift 3 up and running, including the capability to create a new project.
 ```shell
 $ oc new-project mattermost
 
-$ oc new-app -f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/db-ephemeral.yaml \
--f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/mattermost.yaml
+$ oc new-app -f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/mattermost.yaml
 
 # OR for new dedicated env(s) in same project space 
 
-$ oc new-app -f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/db-ephemeral.yaml \
--f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/mattermost.yaml \
+$ oc new-app -f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/mattermost.yaml \
 -p APPLICATION_NAME=acme
 ```
 
 ####For persistent deployments
 You need to provision a PV:
 ```
-# cat mattermost-pv.yaml
+$ cat mattermost-pv.yaml
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -41,7 +39,10 @@ spec:
     server: nfs-server
   persistentVolumeReclaimPolicy: Retain
 
-# oc create -f mattermost-pv.yaml
+$ oc create -f mattermost-pv.yaml
+
+$ oc new-app -f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/db-persistent.yaml \
+-f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/mattermost.yaml -p MYSQL_PASSWORD=mmtest
 ```
 
 If you want to deploy a MySQL database, you could either use the one provided
