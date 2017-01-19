@@ -20,7 +20,7 @@ $ oc new-app -f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/
 
 $ oc new-app -f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/db-ephemeral.yml \
 -f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/mattermost.yaml \
---param=APPLICATION_NAME=mm-acme --param=DATABASE_SERVICE_NAME=mm-acme-mysql
+-p APPLICATION_NAME=mm-acme,DATABASE_SERVICE_NAME=mm-acme-mysql
 ```
 
 ####For persistent deployments
