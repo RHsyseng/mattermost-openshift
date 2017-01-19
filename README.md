@@ -1,32 +1,30 @@
-# Mattermost for OpenShift Origin 3
+# Mattermost for OpenShift 3
 
-This is instant mattermost application for OpenShift Origin 3.
+This is instant mattermost application for OpenShift 3.
 
 The license applies to all files insinde this repository, not mattermost itself.
 
 ## Prerequisites
 
-OpenShift Origin 3 up and running, including the capability to create a new project.
+OpenShift 3 up and running, including the capability to create a new project.
 
 ## Installation
 
 ```shell
 $ oc new-project mattermost
 
-$ oc new-app -f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/db-ephemeral.yml \
--f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/mattermost.yaml
+$ oc new-app -f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/mattermost.yaml
 
 # OR for new dedicated env(s) in same project space 
 
-$ oc new-app -f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/db-ephemeral.yml \
--f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/mattermost.yaml \
--p APPLICATION_NAME=mm-acme,DATABASE_SERVICE_NAME=mm-acme-mysql
+$ oc new-app -f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/mattermost.yaml \
+-p APPLICATION_NAME=acme
 ```
 
 ####For persistent deployments
 You need to provision a PV:
 ```
-# cat mattermost-pv.yaml
+$ cat mattermost-pv.yaml
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -41,25 +39,20 @@ spec:
     server: nfs-server
   persistentVolumeReclaimPolicy: Retain
 
-# oc create -f mattermost-pv.yaml
+$ oc create -f mattermost-pv.yaml
+
+$ oc new-app -f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/db-persistent.yaml \
+-f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/mattermost.yaml -p MYSQL_PASSWORD=mmtest
 ```
-
-and a route:
-
-`oc expose service/mattermost --hostname=mattermost.example.com`
-
-If you want to deploy a MySQL database, you could either use the one provided
-by OpenShift or use the file `db.yaml`.
 
 ## Usage
 
-Point your browser at `mattermost.example.com`, the first user you create will
+Point your browser at your OCP route/url, the first user you create will
 be an Administrator of mattermost.
-
 
 ## Copyright
 
-Copyright (C) 2016 Red Hat Inc.
+Copyright (C) 2017 Red Hat Inc.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
