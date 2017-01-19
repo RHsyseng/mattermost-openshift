@@ -8,21 +8,19 @@ The license applies to all files insinde this repository, not mattermost itself.
 
 OpenShift Origin 3 up and running, including the capability to create a new project.
 
-## Disclaimer
-
-By now only a Docker build strategy based Mattermost application is provided,
-this may not be usable on OpenShift Online 3.
-
 ## Installation
 
 ```shell
 $ oc new-project mattermost
+
 $ oc new-app -f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/db-ephemeral.yml \
 -f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/mattermost.yaml
+
 # OR for new dedicated env(s) in same project space 
+
 $ oc new-app -f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/db-ephemeral.yml \
 -f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/mattermost.yaml \
---param=APPLICATION_NAME=mm-acme --param=DATABASE_SERVICE_NAME=mm-acme-mysql
+-p APPLICATION_NAME=mm-acme,DATABASE_SERVICE_NAME=mm-acme-mysql
 ```
 
 ####For persistent deployments
