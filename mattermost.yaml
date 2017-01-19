@@ -28,6 +28,54 @@ objects:
     - type: ConfigChange
     - imageChange: {}
       type: ImageChange
+- kind: Service
+  apiVersion: v1
+  metadata:
+    annotations:
+      service.alpha.openshift.io/dependencies: '[{"name":"${APPLICATION_NAME}-mysql","namespace":"","kind":"Service"}]'
+    name: ${APPLICATION_NAME}
+    labels:
+      app: ${APPLICATION_NAME}
+  spec:
+    ports:
+    - name: 8065-tcp
+      port: 8065
+      protocol: TCP
+      targetPort: 8065
+    selector:
+      name: ${APPLICATION_NAME}
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: ${APPLICATION_NAME}
+    name: ${APPLICATION_NAME}-mysql
+  spec:
+    ports:
+    - name: mysql
+      port: 3306
+      protocol: TCP
+      targetPort: 3306
+    selector:
+      name: ${APPLICATION_NAME}-mysql
+    sessionAffinity: None
+    type: ClusterIP
+- kind: Route
+  apiVersion: v1
+  metadata:
+    name: ${APPLICATION_NAME}
+    labels:
+      app: ${APPLICATION_NAME}
+  spec:
+    host: ""
+    to:
+      kind: "Service"
+      name: "${APPLICATION_NAME}"
+    tls:
+      termination: edge
 - kind: DeploymentConfig
   apiVersion: v1
   metadata:
@@ -51,13 +99,22 @@ objects:
           - name: DRIVER_NAME
             value: mysql
           - name: DATABASE_SERVICE_NAME
-            value: ${DATABASE_SERVICE_NAME}
+            value: ${APPLICATION_NAME}-mysql
           - name: MYSQL_USER
             value: ${MYSQL_USER}
           - name: MYSQL_PASSWORD
             value: ${MYSQL_PASSWORD}
           - name: MYSQL_DATABASE
             value: ${MYSQL_DATABASE}
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 8065
+              scheme: HTTP
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
     triggers:
     - imageChangeParams:
         automatic: true
@@ -68,51 +125,6 @@ objects:
           name: mattermost:latest
       type: ImageChange
     - type: ConfigChange
-- kind: Service
-  apiVersion: v1
-  metadata:
-    name: ${APPLICATION_NAME}
-    labels:
-      app: ${APPLICATION_NAME}
-  spec:
-    ports:
-    - name: 8065-tcp
-      port: 8065
-      protocol: TCP
-      targetPort: 8065
-    selector:
-      deploymentconfig: ${APPLICATION_NAME}
-- apiVersion: v1
-  kind: Service
-  metadata:
-    creationTimestamp: null
-    labels:
-      app: ${APPLICATION_NAME}
-      template: mysql-ephemeral-template
-    name: ${DATABASE_SERVICE_NAME}
-  spec:
-    ports:
-    - name: mysql
-      port: 3306
-      protocol: TCP
-      targetPort: 3306
-    selector:
-      name: ${DATABASE_SERVICE_NAME}
-    sessionAffinity: None
-    type: ClusterIP
-- kind: Route
-  apiVersion: v1
-  metadata:
-    name: ${APPLICATION_NAME}
-    labels:
-      app: ${APPLICATION_NAME}
-  spec:
-    host: ""
-    to:
-      kind: "Service"
-      name: "${APPLICATION_NAME}"
-    tls:
-      termination: edge
 parameters:
 - name: APPLICATION_NAME
   required: true
@@ -121,11 +133,6 @@ parameters:
   displayName: Memory Limit
   name: MEMORY_LIMIT
   value: 512Mi
-- description: The name of the OpenShift Service exposed for the database.
-  displayName: Database Service Name
-  name: DATABASE_SERVICE_NAME
-  required: true
-  value: mm-mysql
 - description: Username for MySQL user that will be used for accessing the database.
   displayName: MySQL User
   from: user[A-Z0-9]{3}

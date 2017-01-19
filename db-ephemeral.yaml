@@ -3,7 +3,7 @@ kind: Template
 labels:
   template: mattermost-mysql-template
 metadata:
-  name: mattermost-mysql
+  name: mattermost
 objects:
 - apiVersion: v1
   kind: DeploymentConfig
@@ -11,12 +11,11 @@ objects:
     creationTimestamp: null
     labels:
       app: ${APPLICATION_NAME}
-      template: mysql-ephemeral-template
-    name: ${DATABASE_SERVICE_NAME}
+    name: ${APPLICATION_NAME}-mysql
   spec:
     replicas: 1
     selector:
-      name: ${DATABASE_SERVICE_NAME}
+      name: ${APPLICATION_NAME}-mysql
     strategy:
       recreateParams:
         timeoutSeconds: 600
@@ -26,7 +25,7 @@ objects:
       metadata:
         creationTimestamp: null
         labels:
-          name: ${DATABASE_SERVICE_NAME}
+          name: ${APPLICATION_NAME}-mysql
       spec:
         containers:
         - env:
@@ -100,11 +99,6 @@ parameters:
   displayName: Memory Limit
   name: MEMORY_LIMIT
   value: 512Mi
-- description: The name of the OpenShift Service exposed for the database.
-  displayName: Database Service Name
-  name: DATABASE_SERVICE_NAME
-  required: true
-  value: mm-mysql
 - description: Username for MySQL user that will be used for accessing the database.
   displayName: MySQL User
   from: user[A-Z0-9]{3}
