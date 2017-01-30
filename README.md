@@ -13,11 +13,15 @@ OpenShift 3 up and running, including the capability to create a new project.
 ```shell
 $ oc new-project mattermost
 
-$ oc new-app -f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/mattermost.yaml
+# CENTOS-based (works in OpenShift Online)
+$ oc new-app https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/mattermost-centos.yaml
+
+# RHEL-based
+$ oc new-app https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/mattermost.yaml
 
 # OR for new dedicated env(s) in same project space 
 
-$ oc new-app -f https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/mattermost.yaml \
+$ oc new-app https://raw.githubusercontent.com/RHsyseng/mattermost-openshift/master/mattermost.yaml \
 -p APPLICATION_NAME=acme
 ```
 
